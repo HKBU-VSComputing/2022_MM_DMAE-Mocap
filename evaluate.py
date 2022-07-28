@@ -3,7 +3,7 @@ import cv2
 import warnings
 import numpy as np
 
-from util.config import ShelfEvaCfg
+from util.config import ShelfEvaCfg, parse_args
 from util.skel_utils import SkelConverter
 from util.utils import util_re_id, util_evaluate_driver, util_evaluate_summary
 from core.triangulation import triangular_parse_camera
@@ -23,7 +23,7 @@ def eval_snapshot(mocap_config, frameIdx, src_frame, gt_frame, camera_proj):
 
 
 if __name__ == '__main__':
-    mocap_cfg = ShelfEvaCfg()
+    mocap_cfg = ShelfEvaCfg(parse_args())
     mocap_skel_converter = SkelConverter(mocap_cfg)
     # 1. load GT data
     gt_data = np.load(mocap_cfg.gt_path, allow_pickle=True).tolist()  # frame X skel X joint X ch

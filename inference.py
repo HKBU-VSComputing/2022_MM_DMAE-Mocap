@@ -10,7 +10,7 @@ from core.triangulation import triangular_process_with_identity
 from core.dmae_handler import dmae_model_prepare
 from core.dmae_handler import DMAEQueueController
 
-from util.config import ShelfCfg
+from util.config import ShelfCfg, parse_args
 from util.skel_painter import draw_skels2d_for_each_view
 
 
@@ -19,7 +19,7 @@ def data_check(path):
 
 
 if __name__ == '__main__':
-    mocap_cfg = ShelfCfg()
+    mocap_cfg = ShelfCfg(parse_args())
     # 0. data validity check
     data_check(mocap_cfg.data_root)
     data_check(mocap_cfg.img_root)
@@ -51,10 +51,12 @@ if __name__ == '__main__':
         if mocap_cfg.img_suffix in dirs:
             mocap_frame_idx.append(dirs.split(".")[0])
     assert mocap_frame_num == len(mocap_frame_idx), "Wrong frame number: {}".format(mocap_frame_num)
-    print("===\nSRC_path: {} with frame Num: {}\nDST_path: {}\nCamera num:{}\n===".format(mocap_cfg.data_root,
-                                                                                          mocap_frame_num,
-                                                                                          mocap_cfg.out_folder,
-                                                                                          camera_num))
+    print("===\nSRC_path: {} with frame Num: {}\nDST_path: {}\nCamera num:{}\nD-MAE enable: {}\n===".format(
+        mocap_cfg.data_root,
+        mocap_frame_num,
+        mocap_cfg.out_folder,
+        camera_num,
+        mocap_cfg.dmae_enable))
     # 2. process each frame
     pre_frame_idx = None
     pre_skel3ds_with_id = None
@@ -67,10 +69,14 @@ if __name__ == '__main__':
             frame_skel_data.append(mocap_skel2d_data[view_dir][mocap_frame_idx[frameIdx]])
         skel3d_dst_path = os.path.join(mocap_cfg.out_folder, mocap_frame_idx[frameIdx] + ".npy")
         snapshot_dst_path = os.path.join(mocap_cfg.snp_folder, mocap_frame_idx[frameIdx] + ".jpg")
+        # 2.0 jump processed frame to save time
         if os.path.exists(skel3d_dst_path) or os.path.exists(snapshot_dst_path):
             print("Frame {} jumped".format(frameIdx))
             pre_skel3ds_with_id = np.load(skel3d_dst_path, allow_pickle=True).tolist()
-            pre_skel3ds_with_id = [item[0] for item in pre_skel3ds_with_id]
+            if mocap_cfg.dmae_enable:
+                pre_skel3ds_with_id = [item[0] for item in pre_skel3ds_with_id]
+            else:
+                pre_skel3ds_with_id = [item for item in pre_skel3ds_with_id]
             continue
 
         # 2.1 load OpenPose skeleton data
@@ -112,7 +118,10 @@ if __name__ == '__main__':
                                                                  ft=True)
 
         # 2.3.1 store current skel3d_with_id as pre_skel3d_with_id
-        pre_skel3ds_with_id = [item[0] for item in skel3d_set_with_id]
+        if mocap_cfg.dmae_enable:
+            pre_skel3ds_with_id = [item[0] for item in skel3d_set_with_id]
+        else:
+            pre_skel3ds_with_id = skel3d_set_with_id
         pre_frame_idx = cur_frame_idx
 
         # 2.4 store skel3d data and snapshot (optional)

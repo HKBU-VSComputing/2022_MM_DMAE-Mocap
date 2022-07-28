@@ -2,7 +2,7 @@
 
 <p align="center"><img src="assets/framework.jpg" width="90%" alt="" /></p>
 
-This repository includes the source code for our ACM Multimedia 2022 paper on multi-view multi-person 3D pose estimation. The preprint version is available at arXiv ([arXiv:2207.07381](https://arxiv.org/abs/2207.07381)). The project webpage is provided [here](/pages/projects/dmaeMocap/). Please refer to this for more details.
+This repository includes the source code for our ACM Multimedia 2022 paper on multi-view multi-person 3D pose estimation. The preprint version is available at arXiv ([arXiv:2207.07381](https://arxiv.org/abs/2207.07381)). The project webpage is provided [here](https://jjkislele.github.io/pages/projects/dmaeMocap). Please refer to this for more details.
 
 ### Dependencies
 
@@ -11,7 +11,7 @@ The code is tested on Windows with
 ```
 pytorch                   1.10.2
 torchvision               0.11.3
-CUDA                      11.5
+CUDA                      11.3.1
 ```
 
 We suggest using the virtual environment and an easy-to-use package/environment manager such as conda to maintain the project.
@@ -19,6 +19,9 @@ We suggest using the virtual environment and an easy-to-use package/environment 
 ```
 conda create -n dmaeMocap python=3.6
 conda activate dmaeMocap
+# install pytorch
+conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch
+# install the rest of the dependencies
 pip install -r requirements.txt
 ```
 
@@ -58,7 +61,9 @@ We provide the following script to reconstruct and complete 3D skeletons from mu
 python inference.py
 ```
 
-The configuration of triangulation can be found and modified at [util/config.py](util/config.py). It can visualize the reconstruction results when ``self.snapshot_flag = True`` at Line 15. We set ``self.snapshot_flag = False`` as default.
+The configuration of triangulation can be found and modified at [util/config.py](util/config.py). It can visualize the reconstruction results when ``self.snapshot_flag = True`` at Line 18. We set ``self.snapshot_flag = False`` as default.
+
+You can use ``python inference.py --no-dmae`` to disable the motion completion from D-MAE, and use ``--snapshot`` to enable the snapshot.
 
 ### Evaluate
 
@@ -67,6 +72,7 @@ python evaluate.py
 ```
 
 Similar to ``Inference``, the way to reconstruct and complete, the evaluation script is configured by [util/config.py](util/config.py). In default, we visualize the inference results and the ground-truth at ``data/shelf/output/eval_snapshot`` directory. You can find the metrics in the command console as the output and also are saved at ``data/shelf/output/eval.log``.
+If you want to evaluate the framework without D-MAE, you need to add ``--no-dmae`` to the end of the command line, i.e. ``python evaluate.py --no-dmae``.
 
 Overall, output data would be organized as follows:
 
@@ -106,7 +112,7 @@ If you use our code/models in your research, please cite our paper:
 
 Many thanks to the following open-source repositories for the help to develop D-MAE.
 
-- The reimplementation of [ViT](https://github.com/google-research/vision_transformer) and [MAE](https://arxiv.org/abs/2111.06377) from [vit-pytorch/vit_pytorch/mae](https://github.com/lucidrains/vit-pytorch/blob/main/vit_pytorch/mae.py)
+- The reimplementation of [ViT](https://github.com/google-research/vision_transformer) and [MAE](https://arxiv.org/abs/2111.06377) from [vit-pytorch/vit_pytorch/mae](https://github.com/lucidrains/vit-pytorch/blob/main/vit_pytorch/mae.py) and [pengzhiliang/MAE-pytorch](https://github.com/pengzhiliang/MAE-pytorch)
 - The reimplementation of [Fourier Embedding](https://github.com/tancik/fourier-feature-networks) from [facebookresearch/3detr](https://github.com/facebookresearch/3detr/blob/main/models/position_embedding.py)
 - The fast and robust 2D HPE [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose)
 - The multi-view multi-person 3D HPE systems
