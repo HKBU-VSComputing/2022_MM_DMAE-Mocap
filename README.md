@@ -2,7 +2,7 @@
 
 <p align="center"><img src="assets/framework.jpg" width="90%" alt="" /></p>
 
-This repository includes the source code for our ACM Multimedia 2022 paper on multi-view multi-person 3D pose estimation. The preprint version is available at arXiv ([arXiv:2207.07381](https://arxiv.org/abs/2207.07381)). The project webpage is provided [here](https://jjkislele.github.io/pages/projects/dmaeMocap). Please refer to this for more details.
+This repository includes the source code for our ACM Multimedia 2022 paper on multi-view multi-person 3D pose estimation. The preprint version is available at arXiv ([arXiv:2207.07381](https://arxiv.org/abs/2207.07381)). The project webpage is provided [here](https://jjkislele.github.io/pages/projects/dmaeMocap). The dataset presented in the paper is provided [here](https://jjkislele.github.io/pages/projects/hkbuMocap). Please refer to this for more details.
 
 ### Dependencies
 
